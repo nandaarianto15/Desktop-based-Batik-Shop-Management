@@ -27,9 +27,8 @@ Public Class laporan_penjualan
     Private Sub TampilkanLaporan()
         koneksi()
 
-        ' Bikin rentang waktu: dari awal hari sampai akhir hari
         Dim dari As Date = dtDari.Value.Date
-        Dim sampai As Date = dtSampai.Value.Date.AddDays(1).AddSeconds(-1) ' sampai 23:59:59
+        Dim sampai As Date = dtSampai.Value.Date.AddDays(1).AddSeconds(-1)
 
         Dim query As String = "SELECT t.id, t.tanggal, p.nama_produk, d.jumlah, d.subtotal
                            FROM transaksi t
@@ -44,6 +43,12 @@ Public Class laporan_penjualan
         ds = New DataSet()
         da.Fill(ds, "laporan")
         dgvLaporan.DataSource = ds.Tables("laporan")
+        dgvLaporan.Columns("id").HeaderText = "ID Transaksi"
+        dgvLaporan.Columns("tanggal").HeaderText = "Tanggal"
+        dgvLaporan.Columns("nama_produk").HeaderText = "Nama Produk"
+        dgvLaporan.Columns("jumlah").HeaderText = "Jumlah"
+        dgvLaporan.Columns("subtotal").HeaderText = "Subtotal"
+
 
         ' Hitung total
         Dim total As Integer = 0
@@ -53,34 +58,52 @@ Public Class laporan_penjualan
         lblTotal.Text = "Total Pendapatan: Rp " & total.ToString("N0")
     End Sub
 
+    Private Sub BtnCari_Click(sender As Object, e As EventArgs) Handles BtnCari.Click
+        koneksi()
+        Dim keyword As String = txtCari.Text.Trim()
 
-    ' Tombol tampilkan ditekan
+        Dim query As String = "SELECT t.id, t.tanggal, p.nama_produk, d.jumlah, d.subtotal " &
+                          "FROM transaksi t " &
+                          "JOIN detail_transaksi d ON t.id = d.id_transaksi " &
+                          "JOIN produk p ON d.id_produk = p.id " &
+                          "WHERE p.nama_produk LIKE @keyword OR t.tanggal LIKE @keyword"
+
+        da = New MySqlDataAdapter(query, conn)
+        da.SelectCommand.Parameters.AddWithValue("@keyword", "%" & keyword & "%")
+
+        ds = New DataSet()
+        da.Fill(ds, "laporan")
+        dgvLaporan.DataSource = ds.Tables("laporan")
+        dgvLaporan.Columns("id").HeaderText = "ID Transaksi"
+        dgvLaporan.Columns("tanggal").HeaderText = "Tanggal"
+        dgvLaporan.Columns("nama_produk").HeaderText = "Nama Produk"
+        dgvLaporan.Columns("jumlah").HeaderText = "Jumlah"
+        dgvLaporan.Columns("subtotal").HeaderText = "Subtotal"
+
+
+        Dim total As Integer = 0
+        For Each row As DataRow In ds.Tables("laporan").Rows
+            total += Val(row("subtotal"))
+        Next
+        lblTotal.Text = "Total Pendapatan: Rp " & total.ToString("N0")
+    End Sub
+
+
     Private Sub btnTampilkan_Click(sender As Object, e As EventArgs) Handles btnTampilkan.Click
         TampilkanLaporan()
     End Sub
 
-    Private Sub dgvLaporan_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvLaporan.CellContentClick
-        ' Kosong, jika tidak ada interaksi khusus
-    End Sub
     Private Sub btnKembali_Click(sender As Object, e As EventArgs) Handles btnKembali.Click
         menu_utama_admin.Show()
         Me.Hide()
     End Sub
 
-    Private Sub BtnCari_Click(sender As Object, e As EventArgs) Handles BtnCari.Click
-        koneksi()
-        Dim keyword As String = txtCari.Text.Trim()
-        da = New MySqlDataAdapter("SELECT * FROM transaksi WHERE tanggal LIKE @keyword", conn)
-        da.SelectCommand.Parameters.AddWithValue("@keyword", "%" & keyword & "%")
-        ds = New DataSet()
-        da.Fill(ds, "transaksi")
-        dgvLaporan.DataSource = ds.Tables("transaksi")
-    End Sub
+
 
     Private Sub CetakLaporanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CetakLaporanToolStripMenuItem.Click
         PrintPreviewDialog1.Document = PrintDocument1
-        PrintPreviewDialog1.Width = 1000    ' lebar
-        PrintPreviewDialog1.Height = 800    ' tinggi
+        PrintPreviewDialog1.Width = 1000
+        PrintPreviewDialog1.Height = 800
         PrintPreviewDialog1.ShowDialog()
     End Sub
 
@@ -93,7 +116,6 @@ Public Class laporan_penjualan
         Dim pageWidth As Integer = e.MarginBounds.Width
         Dim y As Integer = topMargin
 
-        ' ====== JUDUL LAPORAN RATATENGAH & GARIS PEMBATAS ======
         Dim title As String = "LAPORAN PENJUALAN"
         Dim titleFont As New Font("Arial", 16, FontStyle.Bold)
         Dim titleSize As SizeF = e.Graphics.MeasureString(title, titleFont)
@@ -102,11 +124,9 @@ Public Class laporan_penjualan
         e.Graphics.DrawString(title, titleFont, brush, titleX, y)
         y += CInt(titleSize.Height + 10)
 
-        ' Garis pembatas di bawah judul
         e.Graphics.DrawLine(New Pen(Color.Black, 2), leftMargin, y, rightMargin, y)
-        y += 20 ' spasi sebelum header tabel
+        y += 20
 
-        ' Kolom
         Dim colWidths As Integer() = {70, 110, 270, 90, 110}
         Dim headers As String() = {"ID", "Tanggal", "Nama Produk", "Jumlah", "Subtotal"}
         Dim xPos As Integer = leftMargin
@@ -115,7 +135,6 @@ Public Class laporan_penjualan
         Dim headerBrush As New SolidBrush(Color.White)
         Dim headerBack As New SolidBrush(Color.Gray)
 
-        ' Header Tabel
         For i As Integer = 0 To headers.Length - 1
             Dim cellRect As New Rectangle(xPos, y, colWidths(i), headerHeight)
             e.Graphics.FillRectangle(headerBack, cellRect)
@@ -125,7 +144,6 @@ Public Class laporan_penjualan
         Next
         y += headerHeight
 
-        ' Isi Tabel
         For Each row As DataGridViewRow In dgvLaporan.Rows
             If Not row.IsNewRow Then
                 xPos = leftMargin
@@ -148,7 +166,6 @@ Public Class laporan_penjualan
             End If
         Next
 
-        ' Total
         y += 20
         e.Graphics.DrawString(lblTotal.Text, New Font("Arial", 12, FontStyle.Bold), brush, leftMargin, y)
     End Sub

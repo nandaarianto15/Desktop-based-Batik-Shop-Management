@@ -189,9 +189,9 @@ Partial Class kelola_data_pelanggan
         Label4.ForeColor = Color.White
         Label4.Location = New Point(360, 52)
         Label4.Name = "Label4"
-        Label4.Size = New Size(361, 46)
+        Label4.Size = New Size(383, 46)
         Label4.TabIndex = 37
-        Label4.Text = "DATA PENGGUNA"
+        Label4.Text = "DATA PELANGGAN"
         ' 
         ' Panel1
         ' 

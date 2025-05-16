@@ -14,8 +14,9 @@ Public Class riwayat_transaksi
     End Sub
 
     Private Sub riwayat_transaksi_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Gunakan ID pengguna yang login
         FormIdPengguna = LoggedInUserId
+        dtpRiwayat.Value = Date.Now
+        dtpRiwayat.MaxDate = Date.Today
         TampilRiwayat()
     End Sub
 

@@ -30,7 +30,7 @@ Public Class regist
     Private Sub regist_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ComboBox1.Items.Clear()
         ComboBox1.Items.Add("admin")
-        ComboBox1.Items.Add("pengguna")
+        ComboBox1.Items.Add("pelanggan")
         ComboBox1.SelectedIndex = 0
     End Sub
 

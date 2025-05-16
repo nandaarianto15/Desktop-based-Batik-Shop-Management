@@ -143,6 +143,7 @@ Partial Class regist
         ' 
         ' ComboBox1
         ' 
+        ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
         ComboBox1.FormattingEnabled = True
         ComboBox1.Location = New Point(37, 298)
         ComboBox1.Margin = New Padding(4, 5, 4, 5)

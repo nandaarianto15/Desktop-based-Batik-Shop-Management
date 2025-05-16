@@ -18,11 +18,15 @@ Public Class pembelian_produk
 
     Private Sub pembelian_produk_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         koneksi()
-        da = New MySqlDataAdapter("SELECT id, nama_produk, harga, stok FROM produk", conn)
+        da = New MySqlDataAdapter("SELECT id, nama_produk, harga, stok, ukuran FROM produk", conn)
         ds = New DataSet()
         da.Fill(ds, "produk")
         dgvProduk.DataSource = ds.Tables("produk")
         dgvProduk.Columns("id").Visible = False
+        dgvProduk.Columns("nama_produk").HeaderText = "Nama Produk"
+        dgvProduk.Columns("harga").HeaderText = "Harga"
+        dgvProduk.Columns("stok").HeaderText = "Stok"
+        dgvProduk.Columns("ukuran").HeaderText = "Ukuran"
     End Sub
 
     Private Sub dgvProduk_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvProduk.CellClick

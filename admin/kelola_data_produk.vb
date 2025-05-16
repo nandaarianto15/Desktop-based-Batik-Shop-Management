@@ -22,6 +22,11 @@ Public Class kelola_data_produk
         da.Fill(ds, "produk")
         dgvProduk.DataSource = ds.Tables("produk")
         dgvProduk.Columns("gambar").Visible = False
+        dgvProduk.Columns("id").HeaderText = "ID Produk"
+        dgvProduk.Columns("nama_produk").HeaderText = "Nama Produk"
+        dgvProduk.Columns("harga").HeaderText = "Harga"
+        dgvProduk.Columns("stok").HeaderText = "Stok"
+        dgvProduk.Columns("ukuran").HeaderText = "Ukuran"
     End Sub
 
     Private Sub dgvProduk_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvProduk.CellClick
@@ -131,7 +136,8 @@ Public Class kelola_data_produk
         dgvProduk.DataSource = ds.Tables("produk")
     End Sub
 
-    Private Sub dgvProduk_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvProduk.CellContentClick
-
+    Private Sub kelola_data_produk_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        TampilProduk()
     End Sub
+
 End Class

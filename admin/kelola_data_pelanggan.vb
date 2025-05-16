@@ -13,6 +13,11 @@ Public Class kelola_data_pelanggan
         ds = New DataSet()
         da.Fill(ds, "pelanggan")
         dgvPelanggan.DataSource = ds.Tables("pelanggan")
+        dgvPelanggan.Columns("id").HeaderText = "ID Pelanggan"
+        dgvPelanggan.Columns("nama").HeaderText = "Nama"
+        dgvPelanggan.Columns("username").HeaderText = "Username"
+        dgvPelanggan.Columns("password").HeaderText = "Kata Sandi"
+        dgvPelanggan.Columns("level").Visible = False
     End Sub
 
     Private Sub dgvPelanggan_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvPelanggan.CellClick
@@ -59,6 +64,12 @@ Public Class kelola_data_pelanggan
         ds = New DataSet()
         da.Fill(ds, "pengguna")
         dgvPelanggan.DataSource = ds.Tables("pengguna")
+
+        dgvPelanggan.Columns("id").HeaderText = "ID Pengguna"
+        dgvPelanggan.Columns("nama").HeaderText = "Nama"
+        dgvPelanggan.Columns("username").HeaderText = "Username"
+        dgvPelanggan.Columns("password").HeaderText = "Kata Sandi"
+        dgvPelanggan.Columns("level").Visible = False
     End Sub
 
     Private Sub BtnReset_Click(sender As Object, e As EventArgs) Handles BtnReset.Click
