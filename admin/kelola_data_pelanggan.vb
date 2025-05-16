@@ -59,11 +59,13 @@ Public Class kelola_data_pelanggan
     Private Sub btnCari_Click(sender As Object, e As EventArgs) Handles btnCari.Click
         koneksi()
         Dim keyword As String = txtCari.Text.Trim()
-        da = New MySqlDataAdapter("SELECT * FROM pengguna WHERE nama LIKE @keyword", conn)
+        Dim query As String = "SELECT * FROM pengguna WHERE nama LIKE @keyword AND level = 'pelanggan'"
+        da = New MySqlDataAdapter(query, conn)
         da.SelectCommand.Parameters.AddWithValue("@keyword", "%" & keyword & "%")
         ds = New DataSet()
         da.Fill(ds, "pengguna")
         dgvPelanggan.DataSource = ds.Tables("pengguna")
+
 
         dgvPelanggan.Columns("id").HeaderText = "ID Pengguna"
         dgvPelanggan.Columns("nama").HeaderText = "Nama"
